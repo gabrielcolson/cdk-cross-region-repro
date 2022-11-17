@@ -24,8 +24,8 @@ export class AppPipelineStage extends cdk.Stage {
       actionName: "GithubSource",
       connectionArn: this.node.tryGetContext("PROD_CODESTAR_CONNECTION_ARN"),
       output: sourceOutput,
-      owner: "gabrielcolson",
-      repo: "cdk-cross-region-repro",
+      owner: this.node.tryGetContext("GITHUB_USERNAME"),
+      repo: this.node.tryGetContext("GITHUB_REPO"),
       branch: "app",
     })
     apiPipeline.addStage({

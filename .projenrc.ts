@@ -25,6 +25,8 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     PROD_CODESTAR_CONNECTION_ARN:
       "arn:aws:codestar-connections:us-east-1:996335177016:connection/3b2589ce-de77-4d6f-befa-ea7482319260",
     PROD_ACCOUNT: "996335177016",
+    GITHUB_USERNAME: "gabrielcolson",
+    GITHUB_REPO: "cdk-cross-region-repro",
   },
 })
 project.synth()

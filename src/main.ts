@@ -16,7 +16,7 @@ export class Pipeline extends cdk.Stack {
       dockerEnabledForSynth: true,
       synth: new pipelines.ShellStep("Synth", {
         input: pipelines.CodePipelineSource.connection(
-          "gabrielcolson/cdk-cross-region-repro",
+          `${this.node.tryGetContext("GITHUB_USERNAME")}/${this.node.tryGetContext("GITHUB_REPO")}`,
           "main",
           {
             connectionArn: this.node.tryGetContext("PIPELINE_CODESTAR_CONNECTION_ARN"),
@@ -60,7 +60,7 @@ export class Pipeline extends cdk.Stack {
 }
 
 const pipelineEnv = {
-  account: "332715547081",
+  account: "332715547081", // REPLACE WITH YOUR ACCOUNT
   region: PRIMARY_REGION,
 }
 
