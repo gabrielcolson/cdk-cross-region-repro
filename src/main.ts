@@ -1,23 +1,71 @@
-import { App, Stack, StackProps } from 'aws-cdk-lib';
-import { Construct } from 'constructs';
+import * as cdk from "aws-cdk-lib"
+import * as pipelines from "aws-cdk-lib/pipelines"
+import { Construct } from "constructs"
+import { AppPipelineStage } from "./app-pipeline-stage"
+import { AppStage } from "./app-stage"
 
-export class MyStack extends Stack {
-  constructor(scope: Construct, id: string, props: StackProps = {}) {
-    super(scope, id, props);
+const PRIMARY_REGION = "eu-west-1"
+const SECONDARY_REGION = "us-east-1"
 
-    // define resources here...
+export class Pipeline extends cdk.Stack {
+  constructor(scope: Construct, id: string, props: cdk.StackProps = {}) {
+    super(scope, id, props)
+
+    const pipeline = new pipelines.CodePipeline(this, "Pipeline", {
+      crossAccountKeys: true,
+      dockerEnabledForSynth: true,
+      synth: new pipelines.ShellStep("Synth", {
+        input: pipelines.CodePipelineSource.connection(
+          "gabrielcolson/cdk-cross-region-repro",
+          "main",
+          {
+            connectionArn: this.node.tryGetContext("PIPELINE_CODESTAR_CONNECTION_ARN"),
+          }
+        ),
+        commands: ["npm ci", "npm run build", "npx cdk synth"],
+      }),
+      useChangeSets: false, // speed up deployments
+    })
+
+    const account = this.node.tryGetContext("PROD_ACCOUNT")
+
+    pipeline.addStage(
+      new AppStage(this, `app-${PRIMARY_REGION}`, {
+        env: {
+          account,
+          region: PRIMARY_REGION,
+        },
+      })
+    )
+
+    pipeline.addStage(
+      new AppStage(this, `app-${SECONDARY_REGION}`, {
+        env: {
+          account,
+          region: SECONDARY_REGION,
+        },
+      })
+    )
+
+    pipeline.addStage(
+      new AppPipelineStage(this, "app-pipeline", {
+        env: {
+          account,
+          region: PRIMARY_REGION,
+        },
+        secondaryRegion: SECONDARY_REGION,
+      })
+    )
   }
 }
 
-// for development, use account/region from cdk cli
-const devEnv = {
+const pipelineEnv = {
   account: process.env.CDK_DEFAULT_ACCOUNT,
-  region: process.env.CDK_DEFAULT_REGION,
-};
+  region: PRIMARY_REGION,
+}
 
-const app = new App();
+const app = new cdk.App()
 
-new MyStack(app, 'cdk-cross-region-repro-dev', { env: devEnv });
-// new MyStack(app, 'cdk-cross-region-repro-prod', { env: prodEnv });
+new Pipeline(app, "cdk-cross-region-repro-dev", { env: pipelineEnv })
 
-app.synth();
+app.synth()
