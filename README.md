@@ -1,6 +1,6 @@
 # Reproduction repo for cross account & cross region CDK pipeline
 
-![Reference Architecture](/assets/pipeline.png)
+![Reference Architecture](/images/pipeline.png)
 
 ## How to deploy
 
