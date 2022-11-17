@@ -66,6 +66,6 @@ const pipelineEnv = {
 
 const app = new cdk.App()
 
-new Pipeline(app, "cdk-cross-region-repro-dev", { env: pipelineEnv })
+new Pipeline(app, "cdk-cross-region-repro", { env: pipelineEnv })
 
 app.synth()
