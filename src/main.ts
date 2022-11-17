@@ -60,7 +60,7 @@ export class Pipeline extends cdk.Stack {
 }
 
 const pipelineEnv = {
-  account: process.env.CDK_DEFAULT_ACCOUNT,
+  account: "332715547081",
   region: PRIMARY_REGION,
 }
 
