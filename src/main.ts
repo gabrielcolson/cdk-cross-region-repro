@@ -29,14 +29,15 @@ export class Pipeline extends cdk.Stack {
 
     const account = this.node.tryGetContext("PROD_ACCOUNT")
 
-    pipeline.addStage(
-      new AppStage(this, `app-${PRIMARY_REGION}`, {
-        env: {
-          account,
-          region: PRIMARY_REGION,
-        },
-      })
-    )
+    // Reduce costs
+    // pipeline.addStage(
+    //   new AppStage(this, `app-${PRIMARY_REGION}`, {
+    //     env: {
+    //       account,
+    //       region: PRIMARY_REGION,
+    //     },
+    //   })
+    // )
 
     pipeline.addStage(
       new AppStage(this, `app-${SECONDARY_REGION}`, {

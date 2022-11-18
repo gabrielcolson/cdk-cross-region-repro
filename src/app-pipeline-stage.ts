@@ -84,16 +84,16 @@ export class AppPipelineStage extends cdk.Stage {
       actions: [buildAction],
     })
 
-    const primaryService = getEcsService(stack, stack.region)
-    const deployPrimaryAction = new codepipeline_actions.EcsDeployAction({
-      actionName: "Deploy",
-      service: primaryService,
-      input: buildOutput,
-    })
-    apiPipeline.addStage({
-      stageName: "Deploy-Primary",
-      actions: [deployPrimaryAction],
-    })
+    // const primaryService = getEcsService(stack, stack.region)
+    // const deployPrimaryAction = new codepipeline_actions.EcsDeployAction({
+    //   actionName: "Deploy",
+    //   service: primaryService,
+    //   input: buildOutput,
+    // })
+    // apiPipeline.addStage({
+    //   stageName: "Deploy-Primary",
+    //   actions: [deployPrimaryAction],
+    // })
 
     const secondaryService = getEcsService(stack, props.secondaryRegion)
     const deploySecondaryAction = new codepipeline_actions.EcsDeployAction({
